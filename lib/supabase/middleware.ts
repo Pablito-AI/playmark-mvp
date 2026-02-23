@@ -5,6 +5,11 @@ export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({
     request
   });
+  type CookieToSet = {
+    name: string;
+    value: string;
+    options?: Parameters<(typeof response.cookies)["set"]>[2];
+  };
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -14,7 +19,7 @@ export async function updateSession(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: CookieToSet[]) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           response = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
