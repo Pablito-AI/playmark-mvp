@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { MarketCard } from "@/components/market-card";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { MarketPoolRow, MarketRow } from "@/types/app";
@@ -53,23 +54,23 @@ export default async function HomePage({
       {params.error && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{params.error}</p>}
 
       <div className="flex flex-wrap gap-2">
-        <a href={`/?filter=trending${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`} className={`rounded-lg px-3 py-2 text-sm ${filter === "trending" ? "bg-brand-600 text-white" : "bg-white text-slate-700 border border-slate-300"}`}>
+        <Link href={`/?filter=trending${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`} className={`rounded-lg px-3 py-2 text-sm ${filter === "trending" ? "bg-brand-600 text-white" : "bg-white text-slate-700 border border-slate-300"}`}>
           Trending
-        </a>
-        <a href={`/?filter=new${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`} className={`rounded-lg px-3 py-2 text-sm ${filter === "new" ? "bg-brand-600 text-white" : "bg-white text-slate-700 border border-slate-300"}`}>
+        </Link>
+        <Link href={`/?filter=new${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`} className={`rounded-lg px-3 py-2 text-sm ${filter === "new" ? "bg-brand-600 text-white" : "bg-white text-slate-700 border border-slate-300"}`}>
           New
-        </a>
-        <a href="/" className={`rounded-lg border px-3 py-2 text-sm ${!params.category ? "border-brand-600 text-brand-700" : "border-slate-300 text-slate-700"}`}>
+        </Link>
+        <Link href="/" className={`rounded-lg border px-3 py-2 text-sm ${!params.category ? "border-brand-600 text-brand-700" : "border-slate-300 text-slate-700"}`}>
           All categories
-        </a>
+        </Link>
         {categories.map((category) => (
-          <a
+          <Link
             key={category}
             href={`/?filter=${filter}&category=${encodeURIComponent(category)}`}
             className={`rounded-lg border px-3 py-2 text-sm ${params.category === category ? "border-brand-600 text-brand-700" : "border-slate-300 text-slate-700"}`}
           >
             {category}
-          </a>
+          </Link>
         ))}
       </div>
 
