@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { placeBetAction } from "@/app/actions";
+import { cancelBetAction, placeBetAction } from "@/app/actions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getAuthContext } from "@/lib/auth";
 import { MarketPoolRow, MarketRow } from "@/types/app";
@@ -23,7 +23,7 @@ export default async function MarketDetailPage({
   const supabase = await createSupabaseServerClient();
   const user = await getAuthContext();
 
-  const [{ data: market }, { data: pool }] = await Promise.all([
+  const [{ data: market }, { data: pool }, { data: myBets }] = await Promise.all([
     supabase
       .from("markets")
       .select("id, creator_id, title, description, category, source_link, close_date, status, resolved_outcome, created_at")
@@ -33,7 +33,15 @@ export default async function MarketDetailPage({
       .from("market_pools")
       .select("market_id, yes_pool, no_pool, total_pool, bet_count, participant_count")
       .eq("market_id", id)
-      .single()
+      .single(),
+    user
+      ? supabase
+          .from("bets")
+          .select("id, side, points, created_at")
+          .eq("market_id", id)
+          .eq("user_id", user.authUserId)
+          .order("created_at", { ascending: false })
+      : Promise.resolve({ data: [] })
   ]);
 
   if (!market) {
@@ -51,6 +59,7 @@ export default async function MarketDetailPage({
   }) as MarketPoolRow;
 
   const maxBet = user ? Math.max(1, Math.floor(user.points * 0.2)) : 0;
+  const canCancel = m.status === "open" && new Date(m.close_date).valueOf() > Date.now();
 
   return (
     <div className="space-y-5">
@@ -93,36 +102,67 @@ export default async function MarketDetailPage({
       {q.error && <p className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">{q.error}</p>}
 
       {user ? (
-        <div className="glass-panel p-6">
-          <h2 className="mb-2 text-lg font-semibold">Realizar apuesta</h2>
-          <p className="mb-4 text-sm text-slate-600">
-            Saldo: {user.points} pts. Máximo por apuesta (20%): {maxBet} pts.
-          </p>
+        <>
+          <div className="glass-panel p-6">
+            <h2 className="mb-2 text-lg font-semibold">Realizar apuesta</h2>
+            <p className="mb-4 text-sm text-slate-600">
+              Saldo: {user.points} pts. Máximo por apuesta (20%): {maxBet} pts.
+            </p>
 
-          {m.status === "open" ? (
-            <form action={placeBetAction} className="grid gap-4 md:grid-cols-3">
-              <input type="hidden" name="market_id" value={m.id} />
-              <div>
-                <label htmlFor="side">Lado</label>
-                <select id="side" name="side" defaultValue="yes">
-                  <option value="yes">Sí</option>
-                  <option value="no">No</option>
-                </select>
-              </div>
-              <div>
-                <label htmlFor="points">Puntos</label>
-                <input id="points" name="points" type="number" min={1} max={maxBet} required />
-              </div>
-              <div className="flex items-end">
-                <button type="submit" className="w-full bg-brand-600 text-white hover:bg-brand-700">
-                  Apostar
-                </button>
-              </div>
-            </form>
-          ) : (
-            <p className="text-sm text-slate-600">Este mercado ya no acepta apuestas.</p>
-          )}
-        </div>
+            {m.status === "open" ? (
+              <form action={placeBetAction} className="grid gap-4 md:grid-cols-3">
+                <input type="hidden" name="market_id" value={m.id} />
+                <div>
+                  <label htmlFor="side">Lado</label>
+                  <select id="side" name="side" defaultValue="yes">
+                    <option value="yes">Sí</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="points">Puntos</label>
+                  <input id="points" name="points" type="number" min={1} max={maxBet} required />
+                </div>
+                <div className="flex items-end">
+                  <button type="submit" className="w-full bg-brand-600 text-white hover:bg-brand-700">
+                    Apostar
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <p className="text-sm text-slate-600">Este mercado ya no acepta apuestas.</p>
+            )}
+          </div>
+
+          <div className="glass-panel p-6">
+            <h2 className="mb-3 text-lg font-semibold">Tus apuestas en este mercado</h2>
+            <div className="space-y-2">
+              {(myBets ?? []).map((bet) => (
+                <div key={bet.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-3 text-sm">
+                  <div className="text-slate-700">
+                    <span className="font-semibold">{bet.side === "yes" ? "SÍ" : "NO"}</span> - {bet.points} pts
+                    <span className="ml-2 text-xs text-slate-500">{new Date(bet.created_at).toLocaleString("es-ES")}</span>
+                  </div>
+                  {canCancel ? (
+                    <form action={cancelBetAction}>
+                      <input type="hidden" name="market_id" value={m.id} />
+                      <input type="hidden" name="bet_id" value={bet.id} />
+                      <button type="submit" className="border border-rose-300 bg-white text-rose-700 hover:bg-rose-50">
+                        Cancelar apuesta
+                      </button>
+                    </form>
+                  ) : (
+                    <span className="text-xs text-slate-500">No cancelable</span>
+                  )}
+                </div>
+              ))}
+              {!myBets?.length && <p className="text-sm text-slate-500">Aún no has apostado en este mercado.</p>}
+            </div>
+            {!canCancel && myBets?.length ? (
+              <p className="mt-3 text-xs text-slate-500">Solo puedes cancelar antes del cierre del mercado.</p>
+            ) : null}
+          </div>
+        </>
       ) : (
         <div className="glass-panel p-6 text-sm text-slate-600">
           <Link href="/login" className="font-semibold text-brand-700">

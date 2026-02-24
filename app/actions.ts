@@ -132,6 +132,32 @@ export async function placeBetAction(formData: FormData) {
   redirect(`/markets/${marketId}?success=Apuesta realizada`);
 }
 
+export async function cancelBetAction(formData: FormData) {
+  await getAuthContext(true);
+  const supabase = await createSupabaseServerClient();
+
+  const marketId = getString(formData, "market_id");
+  const betId = getString(formData, "bet_id");
+
+  if (!marketId || !betId) {
+    redirect(`/markets/${marketId}?error=Datos de cancelación inválidos`);
+  }
+
+  const { error } = await supabase.rpc("cancel_bet", {
+    p_bet_id: betId
+  });
+
+  if (error) {
+    redirect(`/markets/${marketId}?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath(`/markets/${marketId}`);
+  revalidatePath("/leaderboard");
+  revalidatePath("/profile");
+  redirect(`/markets/${marketId}?success=Apuesta cancelada`);
+}
+
 export async function resolveMarketAction(formData: FormData) {
   const auth = await getAuthContext(true);
 
