@@ -1,5 +1,6 @@
 import { createMarketAction } from "@/app/actions";
 import { getAuthContext } from "@/lib/auth";
+import { CATEGORIES } from "@/lib/categories";
 
 export default async function CreateMarketPage({
   searchParams
@@ -27,7 +28,16 @@ export default async function CreateMarketPage({
         </div>
         <div>
           <label htmlFor="category">Categoría</label>
-          <input id="category" name="category" type="text" required placeholder="Política, Deportes, Tecnología..." />
+          <select id="category" name="category" required defaultValue="">
+            <option value="" disabled>
+              Selecciona una categoría
+            </option>
+            {CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="source_link">Enlace fuente</label>

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseServiceClient } from "@/lib/supabase/service";
 import { getAuthContext, isAdminEmail } from "@/lib/auth";
+import { isValidCategory } from "@/lib/categories";
 
 function getString(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
@@ -68,6 +69,10 @@ export async function createMarketAction(formData: FormData) {
 
   if (!title || !description || !category || !closeDate) {
     redirect("/create?error=Completa todos los campos obligatorios.");
+  }
+
+  if (!isValidCategory(category)) {
+    redirect("/create?error=Categoría inválida.");
   }
 
   const closeDateObj = new Date(closeDate);
