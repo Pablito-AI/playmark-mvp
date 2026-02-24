@@ -35,8 +35,9 @@ export function MarketCard({ market, pool }: Props) {
 
       <p className="mb-4 line-clamp-2 text-sm text-slate-600">{market.description}</p>
 
-      <div className="mb-3 h-2 overflow-hidden rounded-full bg-slate-200">
+      <div className="mb-3 flex h-2 overflow-hidden rounded-full bg-slate-200">
         <div className="h-full bg-emerald-500" style={{ width: `${yesPct}%` }} />
+        <div className="h-full bg-rose-500" style={{ width: `${noPct}%` }} />
       </div>
 
       <div className="mb-3 grid grid-cols-2 gap-3 text-xs">

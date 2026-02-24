@@ -58,7 +58,9 @@ export default async function MarketDetailPage({
     participant_count: 0
   }) as MarketPoolRow;
 
-  const maxBet = user ? Math.max(1, Math.floor(user.points * 0.2)) : 0;
+  const availableBalance = user?.points ?? 0;
+  const yesPct = p.total_pool > 0 ? Math.round((p.yes_pool / p.total_pool) * 100) : 50;
+  const noPct = 100 - yesPct;
 
   return (
     <div className="space-y-5">
@@ -83,11 +85,9 @@ export default async function MarketDetailPage({
           </a>
         )}
 
-        <div className="mt-6 h-2 overflow-hidden rounded-full bg-slate-200">
-          <div
-            className="h-full bg-emerald-500"
-            style={{ width: `${p.total_pool > 0 ? Math.round((p.yes_pool / p.total_pool) * 100) : 50}%` }}
-          />
+        <div className="mt-6 flex h-2 overflow-hidden rounded-full bg-slate-200">
+          <div className="h-full bg-emerald-500" style={{ width: `${yesPct}%` }} />
+          <div className="h-full bg-rose-500" style={{ width: `${noPct}%` }} />
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
@@ -104,9 +104,7 @@ export default async function MarketDetailPage({
         <>
           <div className="glass-panel p-6">
             <h2 className="mb-2 text-lg font-semibold">Realizar apuesta</h2>
-            <p className="mb-2 text-sm text-slate-600">
-              Saldo: {user.points} pts. Máximo por apuesta (20%): {maxBet} pts.
-            </p>
+            <p className="mb-2 text-sm text-slate-600">Saldo disponible: {availableBalance} pts.</p>
             <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">
               Las apuestas son finales. No se pueden retirar puntos.
             </p>
@@ -123,7 +121,7 @@ export default async function MarketDetailPage({
                 </div>
                 <div>
                   <label htmlFor="points">Puntos</label>
-                  <input id="points" name="points" type="number" min={1} max={maxBet} required />
+                  <input id="points" name="points" type="number" min={1} max={availableBalance} required />
                 </div>
                 <div className="flex items-end">
                   <button type="submit" className="w-full bg-brand-600 text-white hover:bg-brand-700">
