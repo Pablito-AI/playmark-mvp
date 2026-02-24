@@ -165,12 +165,63 @@ export async function deleteMarketAdminAction(formData: FormData) {
     redirect("/admin?error=Predicción no encontrada");
   }
 
-  const { error } = await supabase.rpc("admin_delete_market_with_refunds", {
-    p_market_id: marketId
-  });
+  const { data: bets, error: betsError } = await supabase
+    .from("bets")
+    .select("id, user_id, points")
+    .eq("market_id", marketId);
+  if (betsError) {
+    redirect(`/admin?error=${encodeURIComponent(betsError.message)}`);
+  }
 
-  if (error) {
-    redirect(`/admin?error=${encodeURIComponent(error.message)}`);
+  for (const bet of bets ?? []) {
+    const { data: currentUser, error: currentUserError } = await supabase
+      .from("users")
+      .select("points")
+      .eq("id", bet.user_id)
+      .single();
+    if (currentUserError || !currentUser) {
+      redirect(`/admin?error=${encodeURIComponent(currentUserError?.message ?? "Usuario no encontrado para reembolso")}`);
+    }
+
+    const refundBalance = currentUser.points + bet.points;
+    const { data: updatedUser, error: updateUserError } = await supabase
+      .from("users")
+      .update({ points: refundBalance })
+      .eq("id", bet.user_id)
+      .select("points")
+      .single();
+
+    if (updateUserError || !updatedUser) {
+      redirect(`/admin?error=${encodeURIComponent(updateUserError?.message ?? "No se pudo reembolsar una apuesta")}`);
+    }
+
+    const { error: txError } = await supabase.from("transactions").insert({
+      user_id: bet.user_id,
+      market_id: marketId,
+      type: "refund",
+      amount: bet.points,
+      balance_after: updatedUser.points,
+      description: "Refund por eliminación de mercado por admin"
+    });
+
+    if (txError) {
+      redirect(`/admin?error=${encodeURIComponent(txError.message)}`);
+    }
+  }
+
+  const { error: deleteBetsError } = await supabase.from("bets").delete().eq("market_id", marketId);
+  if (deleteBetsError) {
+    redirect(`/admin?error=${encodeURIComponent(deleteBetsError.message)}`);
+  }
+
+  const { error: deleteResolutionsError } = await supabase.from("market_resolutions").delete().eq("market_id", marketId);
+  if (deleteResolutionsError) {
+    redirect(`/admin?error=${encodeURIComponent(deleteResolutionsError.message)}`);
+  }
+
+  const { error: deleteMarketError } = await supabase.from("markets").delete().eq("id", marketId);
+  if (deleteMarketError) {
+    redirect(`/admin?error=${encodeURIComponent(deleteMarketError.message)}`);
   }
 
   revalidatePath("/");
