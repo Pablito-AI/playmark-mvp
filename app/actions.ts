@@ -153,7 +153,7 @@ export async function deleteMarketAdminAction(formData: FormData) {
     redirect("/admin?error=No autorizado");
   }
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseServiceClient();
   const marketId = getString(formData, "market_id");
 
   if (!marketId) {
@@ -165,14 +165,18 @@ export async function deleteMarketAdminAction(formData: FormData) {
     redirect("/admin?error=Predicción no encontrada");
   }
 
-  const { error } = await supabase.from("markets").delete().eq("id", marketId);
+  const { data: deletedRows, error } = await supabase.from("markets").delete().eq("id", marketId).select("id");
 
   if (error) {
     redirect(`/admin?error=${encodeURIComponent(error.message)}`);
   }
+  if (!deletedRows?.length) {
+    redirect("/admin?error=No se pudo eliminar la predicción");
+  }
 
   revalidatePath("/");
   revalidatePath("/admin");
+  revalidatePath("/past");
   revalidatePath("/leaderboard");
   revalidatePath("/profile");
   redirect("/admin?success=Predicción eliminada");
@@ -207,6 +211,7 @@ export async function resolveMarketAction(formData: FormData) {
 
   revalidatePath("/");
   revalidatePath("/admin");
+  revalidatePath("/past");
   revalidatePath("/leaderboard");
   redirect("/admin?success=Mercado resuelto");
 }

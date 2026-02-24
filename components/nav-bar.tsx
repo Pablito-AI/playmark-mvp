@@ -22,6 +22,9 @@ export function NavBar({ user, isAdmin }: Props) {
             <Link href="/leaderboard" className="hover:text-brand-700">
               Ranking
             </Link>
+            <Link href="/past" className="hover:text-brand-700">
+              Pasadas
+            </Link>
             {user && (
               <Link href="/create" className="hover:text-brand-700">
                 Crear mercado

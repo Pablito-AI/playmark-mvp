@@ -18,7 +18,7 @@ export default async function HomePage({
   let marketsQuery = supabase
     .from("markets")
     .select("id, creator_id, title, description, category, source_link, close_date, status, resolved_outcome, created_at")
-    .neq("status", "resolved");
+    .eq("status", "open");
 
   if (params.category) {
     marketsQuery = marketsQuery.eq("category", params.category);
@@ -27,7 +27,7 @@ export default async function HomePage({
   const [{ data: marketsData }, { data: poolsData }, { data: categoriesData }] = await Promise.all([
     marketsQuery,
     supabase.from("market_pools").select("market_id, yes_pool, no_pool, total_pool, bet_count, participant_count"),
-    supabase.from("markets").select("category")
+    supabase.from("markets").select("category").eq("status", "open")
   ]);
 
   const markets = (marketsData ?? []) as MarketRow[];
