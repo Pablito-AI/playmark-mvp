@@ -67,12 +67,12 @@ export async function createMarketAction(formData: FormData) {
   const closeDate = getString(formData, "close_date");
 
   if (!title || !description || !category || !closeDate) {
-    redirect("/create?error=All required fields must be filled.");
+    redirect("/create?error=Completa todos los campos obligatorios.");
   }
 
   const closeDateObj = new Date(closeDate);
   if (Number.isNaN(closeDateObj.valueOf()) || closeDateObj <= new Date()) {
-    redirect("/create?error=Close date must be in the future.");
+    redirect("/create?error=La fecha de cierre debe estar en el futuro.");
   }
 
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
@@ -83,7 +83,7 @@ export async function createMarketAction(formData: FormData) {
     .gte("created_at", oneHourAgo);
 
   if ((count ?? 0) >= 5) {
-    redirect("/create?error=Rate limit reached. Try again later.");
+    redirect("/create?error=Límite alcanzado. Inténtalo de nuevo más tarde.");
   }
 
   const { error } = await supabase.from("markets").insert({
@@ -100,7 +100,7 @@ export async function createMarketAction(formData: FormData) {
   }
 
   revalidatePath("/");
-  redirect("/?success=Market created");
+  redirect("/?success=Mercado creado");
 }
 
 export async function placeBetAction(formData: FormData) {
@@ -112,7 +112,7 @@ export async function placeBetAction(formData: FormData) {
   const points = toPositiveInt(getString(formData, "points"));
 
   if (!marketId || !["yes", "no"].includes(side) || !Number.isFinite(points) || points <= 0) {
-    redirect(`/markets/${marketId}?error=Invalid bet`);
+    redirect(`/markets/${marketId}?error=Apuesta inválida`);
   }
 
   const { error } = await supabase.rpc("place_bet", {
@@ -129,14 +129,14 @@ export async function placeBetAction(formData: FormData) {
   revalidatePath(`/markets/${marketId}`);
   revalidatePath("/leaderboard");
   revalidatePath("/profile");
-  redirect(`/markets/${marketId}?success=Bet placed`);
+  redirect(`/markets/${marketId}?success=Apuesta realizada`);
 }
 
 export async function resolveMarketAction(formData: FormData) {
   const auth = await getAuthContext(true);
 
   if (!isAdminEmail(auth!.email)) {
-    redirect("/admin?error=Unauthorized");
+    redirect("/admin?error=No autorizado");
   }
 
   const marketId = getString(formData, "market_id");
@@ -144,7 +144,7 @@ export async function resolveMarketAction(formData: FormData) {
   const notes = getString(formData, "notes");
 
   if (!marketId || !["yes", "no"].includes(outcome)) {
-    redirect("/admin?error=Invalid resolution payload");
+    redirect("/admin?error=Datos de resolución inválidos");
   }
 
   const service = createSupabaseServiceClient();
@@ -162,5 +162,5 @@ export async function resolveMarketAction(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/admin");
   revalidatePath("/leaderboard");
-  redirect("/admin?success=Market resolved");
+  redirect("/admin?success=Mercado resuelto");
 }

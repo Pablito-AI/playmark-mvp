@@ -45,29 +45,41 @@ export default async function HomePage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-slate-900">Prediction Feed</h1>
-        <p className="mt-1 text-sm text-slate-600">Trade play-money points on yes/no outcomes.</p>
-      </div>
+      <section className="glass-panel overflow-hidden p-6 md:p-8">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">Mercado de predicción</p>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Predice eventos. Compite con puntos.</h1>
+        <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">
+          Opera mercados de sí/no con dinero ficticio y escala en el ranking.
+        </p>
+      </section>
 
-      {params.success && <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{params.success}</p>}
-      {params.error && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{params.error}</p>}
+      {params.success && <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{params.success}</p>}
+      {params.error && <p className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">{params.error}</p>}
 
-      <div className="flex flex-wrap gap-2">
-        <Link href={`/?filter=trending${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`} className={`rounded-lg px-3 py-2 text-sm ${filter === "trending" ? "bg-brand-600 text-white" : "bg-white text-slate-700 border border-slate-300"}`}>
-          Trending
+      <div className="glass-panel flex flex-wrap items-center gap-2 p-3">
+        <Link
+          href={`/?filter=trending${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`}
+          className={`rounded-lg px-3 py-2 text-sm font-medium ${filter === "trending" ? "bg-brand-600 text-white" : "bg-white text-slate-700 ring-1 ring-slate-200"}`}
+        >
+          Tendencia
         </Link>
-        <Link href={`/?filter=new${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`} className={`rounded-lg px-3 py-2 text-sm ${filter === "new" ? "bg-brand-600 text-white" : "bg-white text-slate-700 border border-slate-300"}`}>
-          New
+        <Link
+          href={`/?filter=new${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`}
+          className={`rounded-lg px-3 py-2 text-sm font-medium ${filter === "new" ? "bg-brand-600 text-white" : "bg-white text-slate-700 ring-1 ring-slate-200"}`}
+        >
+          Nuevos
         </Link>
-        <Link href="/" className={`rounded-lg border px-3 py-2 text-sm ${!params.category ? "border-brand-600 text-brand-700" : "border-slate-300 text-slate-700"}`}>
-          All categories
+        <Link
+          href="/"
+          className={`rounded-lg border px-3 py-2 text-sm font-medium ${!params.category ? "border-brand-600 text-brand-700" : "border-slate-300 text-slate-700"}`}
+        >
+          Todas
         </Link>
         {categories.map((category) => (
           <Link
             key={category}
             href={`/?filter=${filter}&category=${encodeURIComponent(category)}`}
-            className={`rounded-lg border px-3 py-2 text-sm ${params.category === category ? "border-brand-600 text-brand-700" : "border-slate-300 text-slate-700"}`}
+            className={`rounded-lg border px-3 py-2 text-sm font-medium ${params.category === category ? "border-brand-600 text-brand-700" : "border-slate-300 text-slate-700"}`}
           >
             {category}
           </Link>
@@ -80,7 +92,7 @@ export default async function HomePage({
         ))}
       </div>
 
-      {!sorted.length && <p className="text-sm text-slate-600">No markets available yet.</p>}
+      {!sorted.length && <p className="text-sm text-slate-600">Todavía no hay mercados disponibles.</p>}
     </div>
   );
 }

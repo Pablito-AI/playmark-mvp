@@ -7,7 +7,7 @@ import { closeExpiredMarkets } from "@/lib/markets";
 
 export const metadata: Metadata = {
   title: "PlayMarket",
-  description: "Prediction market MVP using play money points"
+  description: "Mercado de predicciones con puntos virtuales"
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
@@ -15,10 +15,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const user = await getAuthContext();
 
   return (
-    <html lang="en">
+    <html lang="es">
       <body>
         <NavBar user={user} isAdmin={user ? isAdminEmail(user.email) : false} />
-        <main className="mx-auto w-full max-w-6xl px-4 py-8">{children}</main>
+        <main className="mx-auto w-full max-w-6xl px-4 py-8 md:py-10">{children}</main>
       </body>
     </html>
   );

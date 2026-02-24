@@ -7,19 +7,26 @@
 }
 
 body {
-  @apply bg-slate-50 text-slate-900;
+  @apply min-h-screen bg-slate-100 text-slate-900 antialiased;
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(31, 137, 255, 0.12), transparent 40%),
+    radial-gradient(circle at 90% 15%, rgba(16, 110, 230, 0.1), transparent 35%);
 }
 
 input,
 textarea,
 select {
-  @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200;
+  @apply w-full rounded-xl border border-slate-300/90 bg-white/95 px-3 py-2.5 text-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100;
 }
 
 label {
-  @apply text-sm font-medium text-slate-700;
+  @apply mb-1.5 block text-sm font-medium text-slate-700;
 }
 
 button {
-  @apply rounded-lg px-4 py-2 text-sm font-medium transition;
+  @apply rounded-xl px-4 py-2.5 text-sm font-semibold transition;
+}
+
+.glass-panel {
+  @apply rounded-2xl border border-white/60 bg-white/85 shadow-sm backdrop-blur;
 }
