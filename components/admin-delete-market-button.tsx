@@ -22,7 +22,7 @@ export function AdminDeleteMarketButton({ marketId, title }: Props) {
           <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-xl">
             <h3 className="text-lg font-semibold text-slate-900">Confirmar eliminación</h3>
             <p className="mt-2 text-sm text-slate-600">
-              Vas a eliminar la predicción <span className="font-semibold">"{title}"</span>.
+              Vas a eliminar la predicción <span className="font-semibold">{"\""}{title}{"\""}</span>.
             </p>
             <p className="mt-2 text-sm text-rose-700">Esta acción no devuelve puntos a los usuarios.</p>
 
