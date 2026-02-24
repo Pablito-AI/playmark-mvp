@@ -165,13 +165,12 @@ export async function deleteMarketAdminAction(formData: FormData) {
     redirect("/admin?error=Predicción no encontrada");
   }
 
-  const { data: deletedRows, error } = await supabase.from("markets").delete().eq("id", marketId).select("id");
+  const { error } = await supabase.rpc("admin_delete_market_with_refunds", {
+    p_market_id: marketId
+  });
 
   if (error) {
     redirect(`/admin?error=${encodeURIComponent(error.message)}`);
-  }
-  if (!deletedRows?.length) {
-    redirect("/admin?error=No se pudo eliminar la predicción");
   }
 
   revalidatePath("/");
