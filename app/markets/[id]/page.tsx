@@ -121,7 +121,7 @@ export default async function MarketDetailPage({
                 </div>
                 <div>
                   <label htmlFor="points">Puntos</label>
-                  <input id="points" name="points" type="number" min={1} max={availableBalance} required />
+                  <input id="points" name="points" type="number" min={1} required />
                 </div>
                 <div className="flex items-end">
                   <button type="submit" className="w-full bg-brand-600 text-white hover:bg-brand-700">
