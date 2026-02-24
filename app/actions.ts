@@ -86,6 +86,21 @@ export async function createMarketAction(formData: FormData) {
     redirect("/create?error=Límite alcanzado. Inténtalo de nuevo más tarde.");
   }
 
+  const duplicateWindowStart = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+  const normalizedTitle = title.toLowerCase().trim();
+  const { data: recentTitles } = await supabase
+    .from("markets")
+    .select("title")
+    .eq("creator_id", auth!.authUserId)
+    .gte("created_at", duplicateWindowStart)
+    .limit(25);
+
+  const hasDuplicateTitle = (recentTitles ?? []).some((row) => (row.title ?? "").toLowerCase().trim() === normalizedTitle);
+
+  if (hasDuplicateTitle) {
+    redirect("/create?error=Ya creaste un mercado con este título hace poco. Evita duplicados.");
+  }
+
   const { error } = await supabase.from("markets").insert({
     creator_id: auth!.authUserId,
     title,
@@ -132,30 +147,35 @@ export async function placeBetAction(formData: FormData) {
   redirect(`/markets/${marketId}?success=Apuesta realizada`);
 }
 
-export async function cancelBetAction(formData: FormData) {
-  await getAuthContext(true);
-  const supabase = await createSupabaseServerClient();
-
-  const marketId = getString(formData, "market_id");
-  const betId = getString(formData, "bet_id");
-
-  if (!marketId || !betId) {
-    redirect(`/markets/${marketId}?error=Datos de cancelación inválidos`);
+export async function deleteMarketAdminAction(formData: FormData) {
+  const auth = await getAuthContext(true);
+  if (!isAdminEmail(auth!.email)) {
+    redirect("/admin?error=No autorizado");
   }
 
-  const { error } = await supabase.rpc("cancel_bet", {
-    p_bet_id: betId
-  });
+  const supabase = await createSupabaseServerClient();
+  const marketId = getString(formData, "market_id");
+
+  if (!marketId) {
+    redirect("/admin?error=Solicitud inválida");
+  }
+
+  const { data: market } = await supabase.from("markets").select("id").eq("id", marketId).single();
+  if (!market) {
+    redirect("/admin?error=Predicción no encontrada");
+  }
+
+  const { error } = await supabase.from("markets").delete().eq("id", marketId);
 
   if (error) {
-    redirect(`/markets/${marketId}?error=${encodeURIComponent(error.message)}`);
+    redirect(`/admin?error=${encodeURIComponent(error.message)}`);
   }
 
   revalidatePath("/");
-  revalidatePath(`/markets/${marketId}`);
+  revalidatePath("/admin");
   revalidatePath("/leaderboard");
   revalidatePath("/profile");
-  redirect(`/markets/${marketId}?success=Apuesta cancelada`);
+  redirect("/admin?success=Predicción eliminada");
 }
 
 export async function resolveMarketAction(formData: FormData) {

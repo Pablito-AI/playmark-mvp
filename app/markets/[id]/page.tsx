@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { cancelBetAction, placeBetAction } from "@/app/actions";
+import { placeBetAction } from "@/app/actions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getAuthContext } from "@/lib/auth";
 import { MarketPoolRow, MarketRow } from "@/types/app";
@@ -59,7 +59,6 @@ export default async function MarketDetailPage({
   }) as MarketPoolRow;
 
   const maxBet = user ? Math.max(1, Math.floor(user.points * 0.2)) : 0;
-  const canCancel = m.status === "open" && new Date(m.close_date).valueOf() > Date.now();
 
   return (
     <div className="space-y-5">
@@ -105,8 +104,11 @@ export default async function MarketDetailPage({
         <>
           <div className="glass-panel p-6">
             <h2 className="mb-2 text-lg font-semibold">Realizar apuesta</h2>
-            <p className="mb-4 text-sm text-slate-600">
+            <p className="mb-2 text-sm text-slate-600">
               Saldo: {user.points} pts. Máximo por apuesta (20%): {maxBet} pts.
+            </p>
+            <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">
+              Las apuestas son finales. No se pueden retirar puntos.
             </p>
 
             {m.status === "open" ? (
@@ -143,24 +145,11 @@ export default async function MarketDetailPage({
                     <span className="font-semibold">{bet.side === "yes" ? "SÍ" : "NO"}</span> - {bet.points} pts
                     <span className="ml-2 text-xs text-slate-500">{new Date(bet.created_at).toLocaleString("es-ES")}</span>
                   </div>
-                  {canCancel ? (
-                    <form action={cancelBetAction}>
-                      <input type="hidden" name="market_id" value={m.id} />
-                      <input type="hidden" name="bet_id" value={bet.id} />
-                      <button type="submit" className="border border-rose-300 bg-white text-rose-700 hover:bg-rose-50">
-                        Cancelar apuesta
-                      </button>
-                    </form>
-                  ) : (
-                    <span className="text-xs text-slate-500">No cancelable</span>
-                  )}
+                  <span className="text-xs text-slate-500">Apuesta final</span>
                 </div>
               ))}
               {!myBets?.length && <p className="text-sm text-slate-500">Aún no has apostado en este mercado.</p>}
             </div>
-            {!canCancel && myBets?.length ? (
-              <p className="mt-3 text-xs text-slate-500">Solo puedes cancelar antes del cierre del mercado.</p>
-            ) : null}
           </div>
         </>
       ) : (

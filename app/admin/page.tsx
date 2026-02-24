@@ -1,6 +1,7 @@
 import { resolveMarketAction } from "@/app/actions";
 import { getAuthContext, isAdminEmail } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { AdminDeleteMarketButton } from "@/components/admin-delete-market-button";
 
 const statusMap: Record<string, string> = {
   open: "Abierto",
@@ -29,7 +30,7 @@ export default async function AdminPage({
   return (
     <div className="space-y-5">
       <h1 className="text-3xl font-bold tracking-tight">Panel de administración</h1>
-      <p className="text-sm text-slate-600">Resuelve mercados manualmente y dispara el pago automático.</p>
+      <p className="text-sm text-slate-600">Resuelve mercados manualmente y elimina predicciones cuando sea necesario.</p>
 
       {params.success && <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{params.success}</p>}
       {params.error && <p className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">{params.error}</p>}
@@ -44,6 +45,7 @@ export default async function AdminPage({
                   Estado: {statusMap[market.status] ?? market.status} | Cierre: {new Date(market.close_date).toLocaleString("es-ES")}
                 </p>
               </div>
+              <AdminDeleteMarketButton marketId={market.id} title={market.title} />
             </div>
 
             <form action={resolveMarketAction} className="grid gap-3 md:grid-cols-4">
