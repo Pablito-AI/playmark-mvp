@@ -5,12 +5,20 @@ import { placeBetAction } from "@/app/actions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getAuthContext } from "@/lib/auth";
 import { MarketPoolRow, MarketRow } from "@/types/app";
+import { BetTradePanel } from "@/components/bet-trade-panel";
 
 const statusMap: Record<MarketRow["status"], string> = {
   open: "Abierto",
   closed: "Cerrado",
   resolved: "Resuelto"
 };
+
+function calcOdds(totalPool: number, sidePool: number): string {
+  if (totalPool <= 0 || sidePool <= 0) {
+    return "--";
+  }
+  return `${(totalPool / sidePool).toFixed(2)}x`;
+}
 
 export default async function MarketDetailPage({
   params,
@@ -61,6 +69,8 @@ export default async function MarketDetailPage({
   const availableBalance = user?.points ?? 0;
   const yesPct = p.total_pool > 0 ? Math.round((p.yes_pool / p.total_pool) * 100) : 50;
   const noPct = 100 - yesPct;
+  const yesOdds = calcOdds(p.total_pool, p.yes_pool);
+  const noOdds = calcOdds(p.total_pool, p.no_pool);
 
   return (
     <div className="space-y-5">
@@ -91,8 +101,16 @@ export default async function MarketDetailPage({
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-          <div className="rounded-xl bg-emerald-50 p-3 text-emerald-700">Pool SÍ: {p.yes_pool} pts</div>
-          <div className="rounded-xl bg-rose-50 p-3 text-rose-700">Pool NO: {p.no_pool} pts</div>
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-700">
+            <p className="font-semibold">SÍ {yesPct}%</p>
+            <p>Pool: {p.yes_pool} pts</p>
+            <p>Odds: {yesOdds}</p>
+          </div>
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-rose-700">
+            <p className="font-semibold">NO {noPct}%</p>
+            <p>Pool: {p.no_pool} pts</p>
+            <p>Odds: {noOdds}</p>
+          </div>
         </div>
         <p className="mt-2 text-xs text-slate-500">Pool total: {p.total_pool} pts</p>
       </div>
@@ -102,37 +120,15 @@ export default async function MarketDetailPage({
 
       {user ? (
         <>
-          <div className="glass-panel p-6">
-            <h2 className="mb-2 text-lg font-semibold">Realizar apuesta</h2>
-            <p className="mb-2 text-sm text-slate-600">Saldo disponible: {availableBalance} pts.</p>
-            <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">
-              Las apuestas son finales. No se pueden retirar puntos.
-            </p>
-
-            {m.status === "open" ? (
-              <form action={placeBetAction} className="grid gap-4 md:grid-cols-3">
-                <input type="hidden" name="market_id" value={m.id} />
-                <div>
-                  <label htmlFor="side">Lado</label>
-                  <select id="side" name="side" defaultValue="yes">
-                    <option value="yes">Sí</option>
-                    <option value="no">No</option>
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="points">Puntos</label>
-                  <input id="points" name="points" type="number" min={1} required />
-                </div>
-                <div className="flex items-end">
-                  <button type="submit" className="w-full bg-brand-600 text-white hover:bg-brand-700">
-                    Apostar
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <p className="text-sm text-slate-600">Este mercado ya no acepta apuestas.</p>
-            )}
-          </div>
+          <BetTradePanel
+            action={placeBetAction}
+            marketId={m.id}
+            marketStatus={m.status}
+            availableBalance={availableBalance}
+            yesPool={p.yes_pool}
+            noPool={p.no_pool}
+            totalPool={p.total_pool}
+          />
 
           <div className="glass-panel p-6">
             <h2 className="mb-3 text-lg font-semibold">Tus apuestas en este mercado</h2>

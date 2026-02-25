@@ -14,12 +14,21 @@ const statusMap: Record<MarketRow["status"], string> = {
   resolved: "Resuelto"
 };
 
+function calcOdds(totalPool: number, sidePool: number): string {
+  if (totalPool <= 0 || sidePool <= 0) {
+    return "--";
+  }
+  return `${(totalPool / sidePool).toFixed(2)}x`;
+}
+
 export function MarketCard({ market, pool }: Props) {
   const total = pool?.total_pool ?? 0;
   const yes = pool?.yes_pool ?? 0;
   const no = pool?.no_pool ?? 0;
   const yesPct = total > 0 ? Math.round((yes / total) * 100) : 50;
   const noPct = 100 - yesPct;
+  const yesOdds = calcOdds(total, yes);
+  const noOdds = calcOdds(total, no);
 
   return (
     <Link
@@ -40,9 +49,17 @@ export function MarketCard({ market, pool }: Props) {
         <div className="h-full bg-rose-500" style={{ width: `${noPct}%` }} />
       </div>
 
-      <div className="mb-3 grid grid-cols-2 gap-3 text-xs">
-        <div className="rounded-lg bg-emerald-50 px-3 py-2 font-medium text-emerald-700">SÍ {yesPct}% ({yes} pts)</div>
-        <div className="rounded-lg bg-rose-50 px-3 py-2 font-medium text-rose-700">NO {noPct}% ({no} pts)</div>
+      <div className="mb-3 grid grid-cols-2 gap-2 text-xs">
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2">
+          <p className="font-semibold text-emerald-800">SÍ {yesPct}%</p>
+          <p className="text-emerald-700">Pool {yes} pts</p>
+          <p className="text-emerald-700">Odds {yesOdds}</p>
+        </div>
+        <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2">
+          <p className="font-semibold text-rose-800">NO {noPct}%</p>
+          <p className="text-rose-700">Pool {no} pts</p>
+          <p className="text-rose-700">Odds {noOdds}</p>
+        </div>
       </div>
 
       <div className="flex items-center justify-between text-xs text-slate-500">
