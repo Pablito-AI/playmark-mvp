@@ -38,20 +38,37 @@ export function BetTradePanel({ action, marketId, marketStatus, availableBalance
   const potentialPayout = Number.isFinite(numericPoints) && numericPoints > 0 && selectedOdds !== null ? numericPoints * selectedOdds : null;
 
   return (
-    <div className="glass-panel p-6">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold">Trading</h2>
-        <p className="text-sm text-slate-600">Saldo: {availableBalance} pts</p>
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="mb-5 flex items-end justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Panel de trading</p>
+          <h2 className="text-xl font-bold tracking-tight text-slate-900">Ejecutar orden</h2>
+        </div>
+        <div className="text-right">
+          <p className="text-[11px] uppercase tracking-wide text-slate-500">Saldo</p>
+          <p className="text-2xl font-bold text-slate-900">{availableBalance}</p>
+        </div>
       </div>
 
-      <div className="mb-4 grid grid-cols-2 gap-3 text-sm">
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2">
-          <p className="text-xs text-emerald-700">Odds SÍ</p>
-          <p className="font-semibold text-emerald-800">{formatOdds(yesOdds)}</p>
+      <div className="mb-4 grid grid-cols-2 gap-3">
+        <div className="rounded-lg bg-slate-900 px-3 py-2 text-white">
+          <p className="text-[11px] uppercase tracking-wide text-slate-300">Odds SÍ</p>
+          <p className="text-2xl font-bold">{formatOdds(yesOdds)}</p>
         </div>
-        <div className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2">
-          <p className="text-xs text-rose-700">Odds NO</p>
-          <p className="font-semibold text-rose-800">{formatOdds(noOdds)}</p>
+        <div className="rounded-lg bg-slate-900 px-3 py-2 text-white">
+          <p className="text-[11px] uppercase tracking-wide text-slate-300">Odds NO</p>
+          <p className="text-2xl font-bold">{formatOdds(noOdds)}</p>
+        </div>
+      </div>
+
+      <div className="mb-4 grid grid-cols-2 gap-2 text-xs">
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-emerald-700">
+          <p className="font-semibold">Pool SÍ</p>
+          <p className="text-base font-bold">{yesPool}</p>
+        </div>
+        <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-rose-700">
+          <p className="font-semibold">Pool NO</p>
+          <p className="text-base font-bold">{noPool}</p>
         </div>
       </div>
 
@@ -88,14 +105,14 @@ export function BetTradePanel({ action, marketId, marketStatus, availableBalance
           </div>
           <div className="flex items-end">
             <button type="submit" className="w-full bg-brand-600 text-white hover:bg-brand-700">
-              Apostar
+              Ejecutar apuesta
             </button>
           </div>
 
-          <div className="md:col-span-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
-            <span className="font-medium">Payout potencial:</span>{" "}
-            {potentialPayout === null ? "--" : `${Math.round(potentialPayout)} pts`}
-            <span className="ml-2 text-xs text-slate-500">(estimado con odds actuales)</span>
+          <div className="md:col-span-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3">
+            <p className="text-[11px] uppercase tracking-wide text-slate-500">Payout potencial</p>
+            <p className="text-2xl font-bold text-slate-900">{potentialPayout === null ? "--" : `${Math.round(potentialPayout)} pts`}</p>
+            <p className="text-xs text-slate-500">Estimado con odds actuales</p>
           </div>
         </form>
       ) : (

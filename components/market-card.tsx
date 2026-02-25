@@ -33,36 +33,46 @@ export function MarketCard({ market, pool }: Props) {
   return (
     <Link
       href={`/markets/${market.id}`}
-      className="glass-panel block p-5 transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
+      className="block rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
     >
-      <div className="mb-3 flex items-start justify-between gap-4">
-        <h3 className="text-base font-semibold leading-snug text-slate-900">{market.title}</h3>
-        <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">
-          {market.category}
-        </span>
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <h3 className="text-lg font-bold leading-tight tracking-tight text-slate-900">{market.title}</h3>
+        <span className="shrink-0 rounded-md bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">{market.category}</span>
       </div>
 
-      <p className="mb-4 line-clamp-2 text-sm text-slate-600">{market.description}</p>
+      <div className="mb-4 grid grid-cols-2 gap-2">
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50/80 p-2.5">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700">Pool SÍ</p>
+          <p className="text-lg font-bold text-emerald-800">{yes}</p>
+        </div>
+        <div className="rounded-lg border border-rose-200 bg-rose-50/80 p-2.5">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-rose-700">Pool NO</p>
+          <p className="text-lg font-bold text-rose-800">{no}</p>
+        </div>
+      </div>
 
-      <div className="mb-3 flex h-2 overflow-hidden rounded-full bg-slate-200">
+      <div className="mb-4 grid grid-cols-2 gap-2">
+        <div className="rounded-lg bg-slate-900 px-3 py-2 text-white">
+          <p className="text-[11px] uppercase tracking-wide text-slate-300">Odds SÍ</p>
+          <p className="text-xl font-bold">{yesOdds}</p>
+        </div>
+        <div className="rounded-lg bg-slate-900 px-3 py-2 text-white">
+          <p className="text-[11px] uppercase tracking-wide text-slate-300">Odds NO</p>
+          <p className="text-xl font-bold">{noOdds}</p>
+        </div>
+      </div>
+
+      <div className="mb-2 flex h-3 overflow-hidden rounded-md bg-slate-200">
         <div className="h-full bg-emerald-500" style={{ width: `${yesPct}%` }} />
         <div className="h-full bg-rose-500" style={{ width: `${noPct}%` }} />
       </div>
 
-      <div className="mb-3 grid grid-cols-2 gap-2 text-xs">
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2">
-          <p className="font-semibold text-emerald-800">SÍ {yesPct}%</p>
-          <p className="text-emerald-700">Pool {yes} pts</p>
-          <p className="text-emerald-700">Odds {yesOdds}</p>
-        </div>
-        <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2">
-          <p className="font-semibold text-rose-800">NO {noPct}%</p>
-          <p className="text-rose-700">Pool {no} pts</p>
-          <p className="text-rose-700">Odds {noOdds}</p>
-        </div>
+      <div className="mb-3 flex items-center justify-between text-xs font-semibold">
+        <span className="text-emerald-700">SÍ {yesPct}%</span>
+        <span className="text-rose-700">NO {noPct}%</span>
       </div>
 
-      <div className="flex items-center justify-between text-xs text-slate-500">
+      <div className="flex items-center justify-between border-t border-slate-200 pt-3 text-xs text-slate-500">
         <span>Estado: {statusMap[market.status]}</span>
         <span>Cierra {formatDistanceToNowStrict(new Date(market.close_date), { addSuffix: true, locale: es })}</span>
       </div>

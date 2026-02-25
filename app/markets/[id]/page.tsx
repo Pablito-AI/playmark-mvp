@@ -78,15 +78,21 @@ export default async function MarketDetailPage({
         ← Volver al inicio
       </Link>
 
-      <div className="glass-panel p-6">
-        <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-slate-500">
-          <span className="rounded-full bg-slate-100 px-2.5 py-1">{m.category}</span>
-          <span>Estado: {statusMap[m.status]}</span>
-          <span>Cierre: {format(new Date(m.close_date), "PPpp", { locale: es })}</span>
-          {m.resolved_outcome && <span>Resultado: {m.resolved_outcome === "yes" ? "Sí" : "No"}</span>}
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+            <span className="rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-700">{m.category}</span>
+            <span>Estado: {statusMap[m.status]}</span>
+            <span>Cierre: {format(new Date(m.close_date), "PPpp", { locale: es })}</span>
+            {m.resolved_outcome && <span>Resultado: {m.resolved_outcome === "yes" ? "Sí" : "No"}</span>}
+          </div>
+          <div className="text-right">
+            <p className="text-[11px] uppercase tracking-wide text-slate-500">Pool total</p>
+            <p className="text-2xl font-bold text-slate-900">{p.total_pool}</p>
+          </div>
         </div>
 
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">{m.title}</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">{m.title}</h1>
         <p className="mt-2 text-sm text-slate-700">{m.description}</p>
 
         {m.source_link && (
@@ -95,28 +101,29 @@ export default async function MarketDetailPage({
           </a>
         )}
 
-        <div className="mt-6 flex h-2 overflow-hidden rounded-full bg-slate-200">
+        <div className="mt-6 grid gap-3 md:grid-cols-2">
+          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">
+            <p className="text-[11px] uppercase tracking-wide text-emerald-700">SÍ</p>
+            <p className="text-3xl font-bold leading-none">{yesPct}%</p>
+            <p className="mt-1 text-sm">Pool: {p.yes_pool} pts</p>
+            <p className="text-sm font-semibold">Odds: {yesOdds}</p>
+          </div>
+          <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-rose-800">
+            <p className="text-[11px] uppercase tracking-wide text-rose-700">NO</p>
+            <p className="text-3xl font-bold leading-none">{noPct}%</p>
+            <p className="mt-1 text-sm">Pool: {p.no_pool} pts</p>
+            <p className="text-sm font-semibold">Odds: {noOdds}</p>
+          </div>
+        </div>
+
+        <div className="mt-4 flex h-3 overflow-hidden rounded-md bg-slate-200">
           <div className="h-full bg-emerald-500" style={{ width: `${yesPct}%` }} />
           <div className="h-full bg-rose-500" style={{ width: `${noPct}%` }} />
         </div>
-
-        <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-700">
-            <p className="font-semibold">SÍ {yesPct}%</p>
-            <p>Pool: {p.yes_pool} pts</p>
-            <p>Odds: {yesOdds}</p>
-          </div>
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-rose-700">
-            <p className="font-semibold">NO {noPct}%</p>
-            <p>Pool: {p.no_pool} pts</p>
-            <p>Odds: {noOdds}</p>
-          </div>
-        </div>
-        <p className="mt-2 text-xs text-slate-500">Pool total: {p.total_pool} pts</p>
       </div>
 
-      {q.success && <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{q.success}</p>}
-      {q.error && <p className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">{q.error}</p>}
+      {q.success && <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{q.success}</p>}
+      {q.error && <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">{q.error}</p>}
 
       {user ? (
         <>
@@ -130,11 +137,11 @@ export default async function MarketDetailPage({
             totalPool={p.total_pool}
           />
 
-          <div className="glass-panel p-6">
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="mb-3 text-lg font-semibold">Tus apuestas en este mercado</h2>
             <div className="space-y-2">
               {(myBets ?? []).map((bet) => (
-                <div key={bet.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-3 text-sm">
+                <div key={bet.id} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-sm">
                   <div className="text-slate-700">
                     <span className="font-semibold">{bet.side === "yes" ? "SÍ" : "NO"}</span> - {bet.points} pts
                     <span className="ml-2 text-xs text-slate-500">{new Date(bet.created_at).toLocaleString("es-ES")}</span>
@@ -147,7 +154,7 @@ export default async function MarketDetailPage({
           </div>
         </>
       ) : (
-        <div className="glass-panel p-6 text-sm text-slate-600">
+        <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm">
           <Link href="/login" className="font-semibold text-brand-700">
             Inicia sesión
           </Link>{" "}
