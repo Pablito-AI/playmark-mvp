@@ -265,10 +265,10 @@ export async function resolveMarketAction(formData: FormData) {
   }
 
   if (market.status === "resolved") {
-    redirect("/admin?error=Este mercado ya está resuelto");
+    redirect("/admin?success=El mercado ya estaba resuelto");
   }
 
-  const { error } = await service.rpc("resolve_market", {
+  const { error } = await service.rpc("resolve_market_backend", {
     p_market_id: marketId,
     p_outcome: outcome,
     p_resolver_id: auth!.authUserId,
