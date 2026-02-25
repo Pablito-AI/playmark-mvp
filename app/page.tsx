@@ -45,54 +45,56 @@ export default async function HomePage({
 
   return (
     <div className="space-y-6">
-      <section className="glass-panel overflow-hidden p-6 md:p-8">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">Mercado de predicción</p>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Predice eventos. Compite con puntos.</h1>
-        <p className="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">
-          Opera mercados de sí/no con dinero ficticio y escala en el ranking.
+      <section className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-lg md:p-8">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">Trading dashboard</p>
+        <h1 className="text-4xl font-bold tracking-tight text-white md:text-5xl">Mercados en vivo</h1>
+        <p className="mt-2 max-w-2xl text-sm text-slate-300 md:text-base">
+          Probabilidades en tiempo real, pools y cuotas parimutuel con puntos virtuales.
         </p>
       </section>
 
-      {params.success && <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{params.success}</p>}
-      {params.error && <p className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">{params.error}</p>}
+      {params.success && <p className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">{params.success}</p>}
+      {params.error && <p className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">{params.error}</p>}
 
-      <div className="glass-panel flex flex-wrap items-center gap-2 p-3">
-        <Link
-          href={`/?filter=trending${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`}
-          className={`rounded-lg px-3 py-2 text-sm font-medium ${filter === "trending" ? "bg-brand-600 text-white" : "bg-white text-slate-700 ring-1 ring-slate-200"}`}
-        >
-          Tendencia
-        </Link>
-        <Link
-          href={`/?filter=new${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`}
-          className={`rounded-lg px-3 py-2 text-sm font-medium ${filter === "new" ? "bg-brand-600 text-white" : "bg-white text-slate-700 ring-1 ring-slate-200"}`}
-        >
-          Nuevos
-        </Link>
-        <Link
-          href="/"
-          className={`rounded-lg border px-3 py-2 text-sm font-medium ${!params.category ? "border-brand-600 text-brand-700" : "border-slate-300 text-slate-700"}`}
-        >
-          Todas
-        </Link>
-        {categories.map((category) => (
+      <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-3">
+        <div className="flex flex-wrap items-center gap-2">
           <Link
-            key={category}
-            href={`/?filter=${filter}&category=${encodeURIComponent(category)}`}
-            className={`rounded-lg border px-3 py-2 text-sm font-medium ${params.category === category ? "border-brand-600 text-brand-700" : "border-slate-300 text-slate-700"}`}
+            href={`/?filter=trending${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`}
+            className={`rounded-lg px-3 py-2 text-sm font-medium ${filter === "trending" ? "bg-emerald-600 text-white" : "bg-slate-800 text-slate-300 hover:text-white"}`}
           >
-            {category}
+            Tendencia
           </Link>
-        ))}
+          <Link
+            href={`/?filter=new${params.category ? `&category=${encodeURIComponent(params.category)}` : ""}`}
+            className={`rounded-lg px-3 py-2 text-sm font-medium ${filter === "new" ? "bg-emerald-600 text-white" : "bg-slate-800 text-slate-300 hover:text-white"}`}
+          >
+            Nuevos
+          </Link>
+          <Link
+            href="/"
+            className={`rounded-lg border px-3 py-2 text-sm font-medium ${!params.category ? "border-emerald-500 text-emerald-300" : "border-slate-700 text-slate-300"}`}
+          >
+            Todas
+          </Link>
+          {categories.map((category) => (
+            <Link
+              key={category}
+              href={`/?filter=${filter}&category=${encodeURIComponent(category)}`}
+              className={`rounded-lg border px-3 py-2 text-sm font-medium ${params.category === category ? "border-emerald-500 text-emerald-300" : "border-slate-700 text-slate-300"}`}
+            >
+              {category}
+            </Link>
+          ))}
+        </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {sorted.map((market) => (
           <MarketCard key={market.id} market={market} pool={pools.get(market.id)} />
         ))}
       </div>
 
-      {!sorted.length && <p className="text-sm text-slate-600">Todavía no hay mercados disponibles.</p>}
+      {!sorted.length && <p className="text-sm text-slate-300">Todavía no hay mercados disponibles.</p>}
     </div>
   );
 }

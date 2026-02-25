@@ -11,11 +11,15 @@ export default async function LeaderboardPage() {
   const rows = data ?? [];
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold tracking-tight">Ranking</h1>
-      <div className="glass-panel overflow-hidden">
+    <div className="space-y-5">
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+        <h1 className="text-4xl font-bold tracking-tight text-white">Ranking</h1>
+        <p className="mt-1 text-sm text-slate-300">Clasificación global por puntos.</p>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-100/80 text-slate-600">
+          <thead className="bg-slate-50 text-slate-600">
             <tr>
               <th className="px-4 py-3">Posición</th>
               <th className="px-4 py-3">Usuario</th>
@@ -24,10 +28,10 @@ export default async function LeaderboardPage() {
           </thead>
           <tbody>
             {rows.map((row, idx) => (
-              <tr key={row.id} className="border-t border-slate-200/80">
-                <td className="px-4 py-3">#{idx + 1}</td>
+              <tr key={row.id} className="border-t border-slate-200">
+                <td className="px-4 py-3 font-semibold">#{idx + 1}</td>
                 <td className="px-4 py-3">{row.display_name || row.email}</td>
-                <td className="px-4 py-3 font-semibold">{row.points}</td>
+                <td className="px-4 py-3 text-base font-bold text-slate-900">{row.points}</td>
               </tr>
             ))}
           </tbody>

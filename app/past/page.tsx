@@ -19,19 +19,19 @@ export default async function PastPredictionsPage() {
 
   return (
     <div className="space-y-6">
-      <section className="glass-panel p-6 md:p-8">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">Histórico</p>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">Predicciones pasadas</h1>
-        <p className="mt-2 text-sm text-slate-600 md:text-base">Mercados cerrados o ya resueltos.</p>
+      <section className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 md:p-8">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">Histórico</p>
+        <h1 className="text-4xl font-bold tracking-tight text-white md:text-5xl">Predicciones pasadas</h1>
+        <p className="mt-2 text-sm text-slate-300 md:text-base">Mercados cerrados o ya resueltos.</p>
       </section>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {markets.map((market) => (
           <MarketCard key={market.id} market={market} pool={pools.get(market.id)} />
         ))}
       </div>
 
-      {!markets.length && <p className="text-sm text-slate-600">Todavía no hay predicciones pasadas.</p>}
+      {!markets.length && <p className="text-sm text-slate-300">Todavía no hay predicciones pasadas.</p>}
     </div>
   );
 }

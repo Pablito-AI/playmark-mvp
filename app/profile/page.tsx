@@ -10,7 +10,8 @@ const txTypeMap: Record<string, string> = {
   initial: "inicial",
   bet: "apuesta",
   payout: "pago",
-  adjustment: "ajuste"
+  adjustment: "ajuste",
+  refund: "refund"
 };
 
 export default async function ProfilePage() {
@@ -39,33 +40,36 @@ export default async function ProfilePage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold tracking-tight">Perfil</h1>
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6">
+        <h1 className="text-4xl font-bold tracking-tight text-white">Perfil</h1>
+        <p className="mt-1 text-sm text-slate-300">Resumen de rendimiento y actividad reciente.</p>
+      </div>
 
       <div className="grid gap-3 md:grid-cols-4">
-        <div className="glass-panel p-4">
-          <p className="text-xs text-slate-500">Puntos</p>
-          <p className="text-xl font-semibold">{stats?.points ?? auth!.points}</p>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-[11px] uppercase tracking-wide text-slate-500">Puntos</p>
+          <p className="text-3xl font-bold text-slate-900">{stats?.points ?? auth!.points}</p>
         </div>
-        <div className="glass-panel p-4">
-          <p className="text-xs text-slate-500">Apuestas totales</p>
-          <p className="text-xl font-semibold">{stats?.total_bets ?? 0}</p>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-[11px] uppercase tracking-wide text-slate-500">Apuestas totales</p>
+          <p className="text-3xl font-bold text-slate-900">{stats?.total_bets ?? 0}</p>
         </div>
-        <div className="glass-panel p-4">
-          <p className="text-xs text-slate-500">Apuestas ganadas</p>
-          <p className="text-xl font-semibold">{stats?.winning_bets ?? 0}</p>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-[11px] uppercase tracking-wide text-slate-500">Apuestas ganadas</p>
+          <p className="text-3xl font-bold text-slate-900">{stats?.winning_bets ?? 0}</p>
         </div>
-        <div className="glass-panel p-4">
-          <p className="text-xs text-slate-500">Precisión</p>
-          <p className="text-xl font-semibold">{stats?.accuracy ?? 0}%</p>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-[11px] uppercase tracking-wide text-slate-500">Precisión</p>
+          <p className="text-3xl font-bold text-slate-900">{stats?.accuracy ?? 0}%</p>
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="glass-panel p-4">
-          <h2 className="mb-3 text-lg font-semibold">Apuestas recientes</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <h2 className="mb-3 text-lg font-semibold text-slate-900">Apuestas recientes</h2>
           <div className="space-y-2 text-sm">
             {(bets ?? []).map((bet) => (
-              <div key={bet.id} className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2">
+              <div key={bet.id} className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
                 <span>
                   {sideMap[bet.side] ?? bet.side.toUpperCase()} - {bet.points} pts
                 </span>
@@ -76,11 +80,11 @@ export default async function ProfilePage() {
           </div>
         </div>
 
-        <div className="glass-panel p-4">
-          <h2 className="mb-3 text-lg font-semibold">Transacciones recientes</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <h2 className="mb-3 text-lg font-semibold text-slate-900">Transacciones recientes</h2>
           <div className="space-y-2 text-sm">
             {(txs ?? []).map((tx) => (
-              <div key={tx.id} className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2">
+              <div key={tx.id} className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
                 <span>
                   {txTypeMap[tx.type] ?? tx.type}: {tx.amount > 0 ? `+${tx.amount}` : tx.amount} pts
                 </span>

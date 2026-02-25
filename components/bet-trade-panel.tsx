@@ -38,26 +38,26 @@ export function BetTradePanel({ action, marketId, marketStatus, availableBalance
   const potentialPayout = Number.isFinite(numericPoints) && numericPoints > 0 && selectedOdds !== null ? numericPoints * selectedOdds : null;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-[0_12px_28px_-20px_rgba(2,6,23,0.85)]">
       <div className="mb-5 flex items-end justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Panel de trading</p>
-          <h2 className="text-xl font-bold tracking-tight text-slate-900">Ejecutar orden</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900">Ejecutar orden</h2>
         </div>
         <div className="text-right">
           <p className="text-[11px] uppercase tracking-wide text-slate-500">Saldo</p>
-          <p className="text-2xl font-bold text-slate-900">{availableBalance}</p>
+          <p className="text-3xl font-bold leading-none text-slate-900">{availableBalance}</p>
         </div>
       </div>
 
       <div className="mb-4 grid grid-cols-2 gap-3">
-        <div className="rounded-lg bg-slate-900 px-3 py-2 text-white">
+        <div className="rounded-lg bg-slate-900 px-3 py-2.5 text-white">
           <p className="text-[11px] uppercase tracking-wide text-slate-300">Odds SÍ</p>
-          <p className="text-2xl font-bold">{formatOdds(yesOdds)}</p>
+          <p className="text-3xl font-bold leading-none">{formatOdds(yesOdds)}</p>
         </div>
-        <div className="rounded-lg bg-slate-900 px-3 py-2 text-white">
+        <div className="rounded-lg bg-slate-900 px-3 py-2.5 text-white">
           <p className="text-[11px] uppercase tracking-wide text-slate-300">Odds NO</p>
-          <p className="text-2xl font-bold">{formatOdds(noOdds)}</p>
+          <p className="text-3xl font-bold leading-none">{formatOdds(noOdds)}</p>
         </div>
       </div>
 
@@ -104,7 +104,7 @@ export function BetTradePanel({ action, marketId, marketStatus, availableBalance
             />
           </div>
           <div className="flex items-end">
-            <button type="submit" className="w-full bg-brand-600 text-white hover:bg-brand-700">
+            <button type="submit" className="w-full bg-emerald-600 text-white hover:bg-emerald-500">
               Ejecutar apuesta
             </button>
           </div>

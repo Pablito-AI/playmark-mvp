@@ -78,45 +78,45 @@ export default async function MarketDetailPage({
         ← Volver al inicio
       </Link>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <span className="rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-700">{m.category}</span>
-            <span>Estado: {statusMap[m.status]}</span>
-            <span>Cierre: {format(new Date(m.close_date), "PPpp", { locale: es })}</span>
-            {m.resolved_outcome && <span>Resultado: {m.resolved_outcome === "yes" ? "Sí" : "No"}</span>}
+            <span className="rounded-md bg-slate-800 px-2 py-1 font-semibold text-slate-200">{m.category}</span>
+            <span className="text-slate-300">Estado: {statusMap[m.status]}</span>
+            <span className="text-slate-300">Cierre: {format(new Date(m.close_date), "PPpp", { locale: es })}</span>
+            {m.resolved_outcome && <span className="text-slate-300">Resultado: {m.resolved_outcome === "yes" ? "Sí" : "No"}</span>}
           </div>
           <div className="text-right">
-            <p className="text-[11px] uppercase tracking-wide text-slate-500">Pool total</p>
-            <p className="text-2xl font-bold text-slate-900">{p.total_pool}</p>
+            <p className="text-[11px] uppercase tracking-wide text-slate-400">Pool total</p>
+            <p className="text-3xl font-bold leading-none text-white">{p.total_pool}</p>
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">{m.title}</h1>
-        <p className="mt-2 text-sm text-slate-700">{m.description}</p>
+        <h1 className="text-4xl font-bold tracking-tight text-white">{m.title}</h1>
+        <p className="mt-2 text-sm text-slate-300">{m.description}</p>
 
         {m.source_link && (
-          <a href={m.source_link} target="_blank" rel="noreferrer" className="mt-3 inline-block text-sm font-semibold text-brand-700">
+          <a href={m.source_link} target="_blank" rel="noreferrer" className="mt-3 inline-block text-sm font-semibold text-emerald-300">
             Ver fuente
           </a>
         )}
 
         <div className="mt-6 grid gap-3 md:grid-cols-2">
-          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">
-            <p className="text-[11px] uppercase tracking-wide text-emerald-700">SÍ</p>
+          <div className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-3 text-emerald-200">
+            <p className="text-[11px] uppercase tracking-wide text-emerald-300">SÍ</p>
             <p className="text-3xl font-bold leading-none">{yesPct}%</p>
-            <p className="mt-1 text-sm">Pool: {p.yes_pool} pts</p>
+            <p className="mt-1 text-sm text-emerald-100">Pool: {p.yes_pool} pts</p>
             <p className="text-sm font-semibold">Odds: {yesOdds}</p>
           </div>
-          <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-rose-800">
-            <p className="text-[11px] uppercase tracking-wide text-rose-700">NO</p>
+          <div className="rounded-lg border border-rose-500/40 bg-rose-500/10 p-3 text-rose-200">
+            <p className="text-[11px] uppercase tracking-wide text-rose-300">NO</p>
             <p className="text-3xl font-bold leading-none">{noPct}%</p>
-            <p className="mt-1 text-sm">Pool: {p.no_pool} pts</p>
+            <p className="mt-1 text-sm text-rose-100">Pool: {p.no_pool} pts</p>
             <p className="text-sm font-semibold">Odds: {noOdds}</p>
           </div>
         </div>
 
-        <div className="mt-4 flex h-3 overflow-hidden rounded-md bg-slate-200">
+        <div className="mt-4 flex h-4 overflow-hidden rounded-md bg-slate-800">
           <div className="h-full bg-emerald-500" style={{ width: `${yesPct}%` }} />
           <div className="h-full bg-rose-500" style={{ width: `${noPct}%` }} />
         </div>
