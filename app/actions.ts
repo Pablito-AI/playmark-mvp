@@ -253,6 +253,21 @@ export async function resolveMarketAction(formData: FormData) {
   }
 
   const service = createSupabaseServiceClient();
+
+  const { data: market, error: marketError } = await service
+    .from("markets")
+    .select("id, status")
+    .eq("id", marketId)
+    .single();
+
+  if (marketError || !market) {
+    redirect(`/admin?error=${encodeURIComponent(marketError?.message ?? "Mercado no encontrado")}`);
+  }
+
+  if (market.status === "resolved") {
+    redirect("/admin?error=Este mercado ya está resuelto");
+  }
+
   const { error } = await service.rpc("resolve_market", {
     p_market_id: marketId,
     p_outcome: outcome,
@@ -267,6 +282,7 @@ export async function resolveMarketAction(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/admin");
   revalidatePath("/past");
+  revalidatePath(`/markets/${marketId}`);
   revalidatePath("/leaderboard");
   redirect("/admin?success=Mercado resuelto");
 }
